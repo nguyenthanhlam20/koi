@@ -1,0 +1,118 @@
+﻿@model KoiVetenary.Data.Models.Appointment
+
+@{
+    ViewData["Title"] = "Create";
+    var message = TempData["Message"] as string;
+    var status = TempData["Status"] as string;
+}
+
+<h1>Create</h1>
+
+<h4>Appointment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OwnerId" class="control-label"></label>
+                <select asp-for="OwnerId" class ="form-control" asp-items="ViewBag.OwnerId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentDate" class="control-label"></label>
+                <input asp-for="AppointmentDate" class="form-control" type="date" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                 <label asp-for="AppointmentTime" class="control-label"></label>
+                 <input asp-for="AppointmentTime" class="form-control" />
+                 <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+             </div>
+            <div class="form-group">
+                <label asp-for="ContactEmail" class="control-label"></label>
+                <input asp-for="ContactEmail" class="form-control" />
+                <span asp-validation-for="ContactEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactPhone" class="control-label"></label>
+                <input asp-for="ContactPhone" class="form-control" />
+                <span asp-validation-for="ContactPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                @* <select asp-for="Status" class="form-control" asp-items="@(new SelectList((List<SelectListItem>)ViewData["AppointmentStatus"], "Value", "Text"))">
+                    <option value="">-- Select Status --</option>
+                </select> *@
+                <input asp-for="Status" class="form-control" value="Pending" readonly />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SpecialRequests" class="control-label"></label>
+                <input asp-for="SpecialRequests" class="form-control" />
+                <span asp-validation-for="SpecialRequests" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsPaid" class="control-label"></label>
+                <input asp-for="IsPaid" class="form-control" value="False" readonly/>
+                <span asp-validation-for="IsPaid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalEstimatedDuration" class="control-label"></label>
+                <input asp-for="TotalEstimatedDuration" class="form-control" value="0" readonly />
+                <span asp-validation-for="TotalEstimatedDuration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalEstimatedDuration" class="control-label"></label>
+                <input asp-for="TotalEstimatedDuration" class="form-control" value="0" readonly/>
+                <span asp-validation-for="TotalEstimatedDuration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalCost" class="control-label"></label>
+                <input asp-for="TotalCost" class="form-control" value="0" readonly />
+                <span asp-validation-for="TotalCost" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModifiedBy" class="control-label"></label>
+                <input asp-for="ModifiedBy" class="form-control" />
+                <span asp-validation-for="ModifiedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UpdatedDate" class="control-label"></label>
+                <input asp-for="UpdatedDate" class="form-control" />
+                <span asp-validation-for="UpdatedDate" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+@if (!string.IsNullOrEmpty(status) && !status.Equals("1"))
+{
+    <script>
+        alert('@message');
+    </script>
+}

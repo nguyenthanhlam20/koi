@@ -1,0 +1,329 @@
+﻿@{
+    ViewData["Title"] = "Animal List";
+}
+
+<div class="row">
+    <div class="col-md-10">
+        <h3 class="display-8">Animal List</h3>
+    </div>
+    <div class="col-md-2 text-end">
+        <button type="button" class="btn btn-primary" onclick="addAnimal();">
+            Add Animal
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="card-header">
+                    <th class="card-title text-center">Name</th>
+                    <th class="card-title text-center">Species</th>
+                    <th class="card-title text-center">Origin</th>
+                    <th class="card-title text-center">Date of Birth</th>
+                    <th class="card-title text-center">Weight</th>
+                    <th class="card-title text-center">Length</th>
+                    <th class="card-title text-center">Color</th>
+                    <th class="card-title text-center">Gender</th>
+                    <th class="card-title text-center">Distinguishing Marks</th>
+                    <th class="card-title text-center">Image URL</th>
+                    <th class="card-title text-center">Owner</th>
+                    <th class="card-title text-center">Type</th>
+                </tr>
+            </thead>
+            <tbody class="tblAnimals">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="animalModal" tabindex="-1" aria-labelledby="animalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "frm", id = "frm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="animalModalLabel">Animal Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="animalId" name="animalId" />
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="species" class="form-label">Species</label>
+                            <input type="text" class="form-control" id="species" name="species" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="origin" class="form-label">Origin</label>
+                            <input type="text" class="form-control" id="origin" name="origin" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" id="weight" name="weight" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="length" class="form-label">Length (cm)</label>
+                            <input type="number" class="form-control" id="length" name="length" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="color" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="color" name="color" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-control" id="gender" name="gender">
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="distinguishingMarks" class="form-label">Distinguishing Marks</label>
+                            <textarea class="form-control" id="distinguishingMarks" name="distinguishingMarks"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="imageUrl" class="form-label">Image URL</label>
+                            <input type="text" class="form-control" id="imageUrl" name="imageUrl" />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="owner" class="form-label">Owner</label>
+                            <select class="form-control" id="owner" name="owner">
+                                <option value="">-- Select Owner --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-control" id="type" name="type">
+                                <option value="">-- Select Type --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btSave" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+        function addAnimal() {
+            $('#animalId').val('');
+            $('#name').val('');
+            $('#species').val('');
+            $('#origin').val('');
+            $('#dateOfBirth').val('');
+            $('#weight').val('');
+            $('#length').val('');
+            $('#color').val('');
+            $('#gender').val('');
+            $('#distinguishingMarks').val('');
+            $('#imageUrl').val('');
+            $('#ownerId').val('');
+            $('#typeId').val('');
+
+            $('#animalModal').modal('show');
+        }
+
+        $(document).ready(function () {
+            loadAnimals();
+            loadOwners();  
+            loadTypes(); 
+        });
+
+        function loadAnimals() {
+            alert("Loading animals...");
+
+            $.ajax({
+                url: 'https://localhost:7238/api/Animals',
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = '';
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.name + '</td>';
+                        html += '<td>' + item.species + '</td>';
+                        html += '<td>' + item.origin + '</td>';
+                        html += '<td>' + item.dateOfBirth + '</td>';
+                        html += '<td>' + item.weight + '</td>';
+                        html += '<td>' + item.length + '</td>';
+                        html += '<td>' + item.color + '</td>';
+                        html += '<td>' + item.gender + '</td>';
+                        html += '<td>' + item.distinguishingMarks + '</td>';
+                        html += '<td>' + item.imageUrl + '</td>';
+                        html += '<td>' + (item.owner ? item.owner.firstName + ' ' + item.owner.lastName : 'N/A') + '</td>';
+                        html += '<td>' + (item.type ? item.type.typeName : 'N/A') + '</td>';
+                        html += '<td>';
+                        html += '<button type="button" class="btn btn-warning btn-sm" onclick="editAnimal(' + item.animalId + ');">Edit</button> ';
+                        html += '<button type="button" class="btn btn-danger btn-sm" onclick="deleteAnimal(' + item.animalId + ');">Delete</button>';
+                        html += '</td>';
+                        html += '</tr>';
+                    });
+                    $('.tblAnimals').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+
+        function loadOwners() {
+            $.ajax({
+                url: 'https://localhost:7238/api/Owners',
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = '';
+                    $.each(result.data, function (key, item) {
+                        html += '<option value="' + item.ownerId + '">' + item.firstName + ' ' + item.lastName + '</option>';
+                    });
+                    $('#owner').append(html);
+                },
+                error: function (xhr, error) {
+                    alert("Error loading owners: " + xhr.statusText);
+                }
+            });
+        }
+
+        function loadTypes() {
+            $.ajax({
+                url: 'https://localhost:7238/api/AnimalTypes',
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = '';
+                    $.each(result.data, function (key, item) {
+                        html += '<option value="' + item.typeId + '">' + item.typeName + '</option>';
+                    });
+                    $('#type').append(html);
+                },
+                error: function (xhr, error) {
+                    alert("Error loading types: " + xhr.statusText);
+                }
+            });
+        }
+
+        function editAnimal(id) {
+            $.ajax({
+                url: 'https://localhost:7238/api/Animals/' + id,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data.status === 1 && data.data) {
+                        $("#animalModalLabel").html("Edit Animal");
+                        $("#animalId").val(data.data.animalId);
+                        $("#name").val(data.data.name);
+                        $("#species").val(data.data.species);
+                        $("#origin").val(data.data.origin);
+                        $("#dateOfBirth").val(data.data.dateOfBirth.split('T')[0]);
+                        $("#weight").val(data.data.weight);
+                        $("#length").val(data.data.length);
+                        $("#color").val(data.data.color);
+                        $("#gender").val(data.data.gender);
+                        $("#distinguishingMarks").val(data.data.distinguishingMarks);
+                        $("#imageUrl").val(data.data.imageUrl);
+
+                        // Set owner and type based on the retrieved data
+                        $("#owner").val(data.data.ownerId);
+                        $("#type").val(data.data.typeId);
+
+                        $('#animalModal').modal('show');
+                    } else {
+                        alert("Failed to load animal data.");
+                    }
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+
+        $("#btSave").click(function () {
+            const animalData = {
+                animalId: $("#animalId").val() || 0,
+                name: $("#name").val(),
+                species: $("#species").val(),
+                origin: $("#origin").val(),
+                dateOfBirth: $("#dateOfBirth").val(),
+                weight: $("#weight").val(),
+                length: $("#length").val(),
+                color: $("#color").val(),
+                gender: $("#gender").val(),
+                distinguishingMarks: $("#distinguishingMarks").val(),
+                imageUrl: $("#imageUrl").val(),
+                ownerId: $("#owner").val(), 
+                typeId: $("#type").val()    
+            };
+
+            const method = animalData.animalId ? 'PUT' : 'POST';
+            const url = method === 'PUT' ? 'https://localhost:7238/api/Animals/' : 'https://localhost:7238/api/Animals';
+
+            $.ajax({
+                type: method,
+                url: url,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': "application/json;charset=utf-8"
+                },
+                data: JSON.stringify(animalData),
+                success: function (result) {
+                    if (result.status >= 1) {
+                        $('#animalModal').modal('hide');
+                        loadAnimals();
+                    } else {
+                        alert("Failed to save animal data: " + result.message);
+                    }
+                },
+                error: function (xhr, error) {
+                    alert("Error saving animal data: " + xhr.responseText);
+                }
+            });
+        });
+
+        function deleteAnimal(id) {
+            if (confirm("Are you sure you want to delete this animal?")) {
+                $.ajax({
+                    url: 'https://localhost:7238/api/Animals/' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        loadAnimals();
+                    },
+                    error: function (xhr, error) {
+                        alert("Error deleting animal: " + xhr.responseText);
+                    }
+                });
+            }
+        }
+    </script>
+}

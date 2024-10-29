@@ -1,0 +1,88 @@
+﻿@{
+    var paymentId = ViewData["paymentId"];
+}
+
+<div id="paymentDetails" class="container my-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Payment Details</h3>
+        </div>
+        <div id="detailsContent" class="card-body">
+            <!-- Payment details will be loaded here by AJAX -->
+            <p class="text-muted">Loading payment details...</p>
+        </div>
+        <div class="px-3 pb-3">
+            <a asp-controller="PaymentAjax" asp-action="Index" class="btn btn-primary">Back to list</a>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {            
+            loadPaymentDetails();
+        });
+
+        function loadPaymentDetails() {
+            var url = 'https://localhost:7238/api/Payment/' + @paymentId; 
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    renderPaymentDetails(result.data);
+                },
+                error: function (xhr, error) {
+                    $('#detailsContent').html('<p class="text-danger">Error loading payment details: ' + xhr.statusText + '</p>');
+                }
+            });
+        }
+
+        function renderPaymentDetails(payment) {
+            var detailsContent = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Payment ID:</strong> ${payment.paymentId}</p>
+                                <p><strong>Appointment ID:</strong> ${payment.appointmentId || "N/A"}</p>
+                                <p><strong>Payment Date:</strong> ${formatDate(payment.paymentDate)}</p>
+                                <p><strong>Total Amount:</strong> $${payment.totalAmount?.toFixed(2) || "N/A"}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Transaction No:</strong> ${payment.transactionNo || "N/A"}</p>
+                                <p><strong>Bank Transaction No:</strong> ${payment.bankTranNo || "N/A"}</p>
+                                <p><strong>Transaction Status:</strong> ${payment.transactionStatus || "N/A"}</p>
+                                <p><strong>Order Info:</strong> ${payment.orderInfo || "N/A"}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Bank Code:</strong> ${payment.bankCode || "N/A"}</p>
+                                <p><strong>Transaction Type:</strong> ${payment.transactionType || "N/A"}</p>
+                                <p><strong>Pay Date:</strong> ${formatDate(payment.payDate)}</p>
+                                <p><strong>Amount:</strong> ${payment.amount || "N/A"}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Message:</strong> ${payment.message || "N/A"}</p>
+                                <p><strong>Response Code:</strong> ${payment.responseCode || "N/A"}</p>
+                                <p><strong>Response ID:</strong> ${payment.responseId || "N/A"}</p>
+                            </div>
+                        </div>
+                    `;
+            $('#detailsContent').html(detailsContent);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            var date = new Date(dateString);
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            var day = ('0' + date.getDate()).slice(-2);
+            return year + '-' + month + '-' + day;
+        }
+    </script>
+}

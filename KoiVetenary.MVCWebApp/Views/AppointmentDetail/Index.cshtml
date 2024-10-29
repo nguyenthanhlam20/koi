@@ -1,0 +1,270 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="row">
+    <div class="col-md-10">
+        <h3 class="display-8">AppointmentDetail List</h3>
+    </div>
+    <div class="col-md-2 text-end">
+        <button type="button" class="btn btn-primary" onclick="add();">
+            Add
+        </button>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="card-header">
+                    <th class="card-title text-center">AppointmentDetail Id</th>
+                    <th class="card-title text-center">Appointment Id</th>
+                    <th class="card-title text-center">Animal Id</th>
+                    <th class="card-title text-center">Veterinarian Id</th>
+                    <th class="card-title text-center">Service Id</th>
+                    <th class="card-title text-center">Animal Status</th>
+                    <th class="card-title text-center">Emergency Instructions</th>
+                    <th class="card-title text-center">Allergies</th>
+                    <th class="card-title text-center">Notes</th>
+                    <th class="card-title text-center">GroomingNeeds</th>
+                    <th class="card-title text-center">SpecialNeeds</th>
+                </tr>
+            </thead>
+            <tbody class="tblAppointmentDetails">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="appointmentDetailModal" tabindex="-1" aria-labelledby="appointmentDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "frm", id = "frm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="appointmentDetailModalLabel">Appointment Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="appointmentId" class="form-label">Appointment ID</label>
+                            <select class="form-control" id="appointmentList" name="appointmentId">
+                                <option value="" disabled selected>Select an Appointment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="animalId" class="form-label">Animal ID</label>
+                            <select class="form-control" id="animalList" name="animalId">
+                                <option value="" disabled selected>Select an Animal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    @* <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="veterinarianId" class="form-label">Veterinarian ID</label>
+                            <input type="number" class="form-control" id="veterinarianId" name="veterinarianId" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="serviceId" class="form-label">Service ID</label>
+                            <input type="number" class="form-control" id="serviceId" name="serviceId" />
+                        </div>
+                    </div> *@
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="animalStatus" class="form-label">Animal Status</label>
+                            <input type="text" class="form-control" id="animalStatus" name="animalStatus" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="emergencyInstructions" class="form-label">Emergency Instructions</label>
+                            <input type="text" class="form-control" id="emergencyInstructions" name="emergencyInstructions" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="allergies" class="form-label">Allergies</label>
+                            <input type="text" class="form-control" id="allergies" name="allergies" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="notes"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="groomingNeeds" class="form-label">Grooming Needs</label>
+                            <input type="text" class="form-control" id="groomingNeeds" name="groomingNeeds" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="specialNeeds" class="form-label">Special Needs</label>
+                            <input type="text" class="form-control" id="specialNeeds" name="specialNeeds" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button id="btSave" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        function add() {
+            $("#appointmentDetailModalContent").html("");
+            $("#appointmentDetailModalLabel").html("Add New");
+            $('#appointmentDetailModal').modal('show');
+            getAppointments();
+            getAnimals();
+        }
+
+        $(document).ready(function () {
+            loadData();
+        });
+
+        function loadData() {
+            alert("Load data progressing ...");
+
+            $.ajax({
+                url: 'https://localhost:7238/api/AppointmentDetail',
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    alert('Server response: ' + result.message);
+                    console.log(result);
+                    var html = '';
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.appointmentDetailId + '</td>';
+                        html += '<td>' + item.appointmentId + '</td>';
+                        html += '<td>' + item.animalId + '</td>';
+                        html += '<td>' + item.veterinarianId + '</td>';
+                        html += '<td>' + item.serviceId + '</td>';
+                        html += '<td>' + item.animalStatus + '</td>';
+                        html += '<td>' + item.emergencyInstructions + '</td>';
+                        html += '<td>' + item.allergies + '</td>';
+                        html += '<td>' + item.notes + '</td>';
+                        html += '<td>' + item.groomingNeeds + '</td>';
+                        html += '<td>' + item.specialNeeds + '</td>';
+                        html += '<td></td>';
+                        html += '</tr>';
+                    });
+                    $('.tblAppointmentDetails').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+
+        $("#btSave").click(function () {
+            $.ajax({
+                type: 'POST',
+                url: 'https://localhost:7238/api/AppointmentDetail',
+                headers: {
+                    'Accept': 'text/plain',
+                    'Content-Type': "application/json;charset=utf-8"
+                },
+                data: JSON.stringify({
+                    appointmentDetailId: 0,
+                    appointmentId: $("#appointmentList").val(),
+                    animalId: $("#animalList").val(),
+                    // veterinarianId: $("#veterinarianId").val(),
+                    // serviceId: $("#serviceId").val(),
+                    animalStatus: $("#animalStatus").val(),
+                    emergencyInstructions: $("#emergencyInstructions").val(),
+                    notes: $("#notes").val(),
+                    allergies: $("#allergies").val(),
+                    groomingNeeds: $("#groomingNeeds").val(),
+                    specialNeeds: $("#specialNeeds").val()
+                }),
+                success: function (result) {
+                    if (result.status >= 1) {
+                        $('#appointmentDetailModal').modal('hide');
+                        localStorage.setItem('appointmentDetailId', result.data);
+                        console.log(localStorage.getItem('appointmentDetailId'));
+                        window.location.href = '/ChoosePlan/Index';
+                    }
+                },
+                error: function (xhr, error) {
+                    alert(xhr.responseText);
+                    console.log(xhr);
+                }
+            });
+        });
+
+        function getAppointments() {
+            $.ajax({
+                url: 'https://localhost:7238/api/Appointments/Pending',
+                type: 'GET',
+                contentType: "application/json;charset=utf-8",
+                dataType: 'json',
+                success: function (result) {
+                    var appointmentSelect = $('#appointmentList');
+                    appointmentSelect.empty();
+                    console.log('Appointments:', result);
+                    appointmentSelect.append('<option value="" disabled selected> Select an Appointment </option>');
+                    $.each(result.data, function (index, appointment) {
+                        appointmentSelect.append('<option value="' + appointment.appointmentId + '">' + appointment.appointmentId + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching appointments:', error);
+                }
+            });
+        }
+
+        function getAnimals() {
+            $.ajax({
+                url: 'https://localhost:7238/api/Animals',
+                type: 'GET',
+                contentType: "application/json;charset=utf-8",
+                dataType: 'json',
+                success: function (result) {
+                    var animalSelect = $('#animalList');
+                    console.log('Animals:', result);
+                    animalSelect.empty();
+                    animalSelect.append('<option value="" disabled selected> Select an Animal </option>');
+                    $.each(result.data, function (index, animal) {
+                        animalSelect.append('<option value="' + animal.animalId + '">' + animal.name + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Error loading animals: ' + xhr.statusText);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,63 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <button onclick="window.location.href='/Service/Create'" class="btn btn-success mb-3">Add New Service</button>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="card-header">
+                    <th class="card-title text-center">Service Name</th>
+                    <th class="card-title text-center">Description</th>
+                    <th class="card-title text-center">Duration</th>
+                    <th class="card-title text-center">Base Price</th>
+                    <th class="card-title text-center">Is Active</th>
+                    <th class="card-title text-center">Required Equipment</th>
+                    <th class="card-title text-center">Special Instructions</th>
+                    <th class="card-title text-center">ServiceImg</th>
+                    <th class="card-title text-center"></th>
+                </tr>
+            </thead>
+            <tbody class="tblServices">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            loadData();
+        });
+        function loadData() {
+            alert("Load data progressing ...");
+
+            $.ajax({
+                url: 'https://localhost:7238/api/Services',
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    alert('Server response: ' + result.message);
+                    console.log(result);
+                    var html = '';
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.serviceName + '</td>';
+                        html += '<td>' + item.description + '</td>';
+                        html += '<td>' + item.duration + '</td>';
+                        html += '<td>' + item.basePrice + '</td>';
+                        html += '<td>' + item.isActive + '</td>';
+                        html += '<td>' + item.requiredEquipment + '</td>';
+                        html += '<td>' + item.specialInstructions + '</td>';
+                        html += '<td>' + item.serviceImg + '</td>';
+                        html += '<td></td>';
+                        html += '</tr>';
+                    });
+                    $('.tblServices').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,163 @@
+﻿@model IEnumerable<KoiVetenary.Data.Models.Animal>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create</a>
+</p>
+
+<div class="container mt-4">
+    <form method="get" asp-action="Index" class="w-100">
+        <div class="input-group mb-2">
+            <input type="text" name="searchTerm" class="form-control" placeholder="Search animals..." aria-label="Search" />
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+         <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="DateOfBirthFrom">Date of Birth From:</label>
+                <input type="date" name="DateOfBirthFrom" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label for="DateOfBirthTo">Date of Birth To:</label>
+                <input type="date" name="DateOfBirthTo" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="AgeFrom">Age From:</label>
+                <input type="number" name="AgeFrom" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label for="AgeTo">Age To:</label>
+                <input type="number" name="AgeTo" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="WeightFrom">Weight From:</label>
+                <input type="number" name="WeightFrom" class="form-control" step="0.1" />
+            </div>
+            <div class="col-md-4">
+                <label for="WeightTo">Weight To:</label>
+                <input type="number" name="WeightTo" class="form-control" step="0.1" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Species)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Origin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Length)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DistinguishingMarks)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAdded)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastCheckup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Owner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Species)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Origin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Length)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DistinguishingMarks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAdded)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastCheckup)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            <td>
+                @($"{item.Owner.FirstName} {item.Owner.LastName}")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type.TypeName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AnimalId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AnimalId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AnimalId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

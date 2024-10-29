@@ -1,0 +1,70 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <h3>Add New Service</h3>
+        <form id="serviceForm">
+            <div class="form-group">
+                <label>Service Name:</label>
+                <input type="text" id="serviceName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" id="description" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Duration:</label>
+                <input type="text" id="duration" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Base Price:</label>
+                <input type="number" id="basePrice" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Is Active:</label>
+                <input type="checkbox" id="isActive" class="form-check-input">
+            </div>
+            <div class="form-group">
+                <label>Required Equipment:</label>
+                <input type="text" id="requiredEquipment" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Special Instructions:</label>
+                <input type="text" id="specialInstructions" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Service Image URL:</label>
+                <input type="text" id="serviceImg" class="form-control">
+            </div>
+            <button type="button" onclick="createService()" class="btn btn-primary">Add Service</button>
+        </form>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        function createService() {
+            var newService = {
+                serviceName: $('#serviceName').val(),
+                description: $('#description').val(),
+                duration: $('#duration').val(),
+                basePrice: parseFloat($('#basePrice').val()),
+                isActive: $('#isActive').is(':checked'),
+                requiredEquipment: $('#requiredEquipment').val(),
+                specialInstructions: $('#specialInstructions').val(),
+                serviceImg: $('#serviceImg').val()
+            };
+
+            $.ajax({
+                url: 'https://localhost:7238/api/Services',
+                type: 'POST',
+                contentType: 'application/json;charset=utf-8',
+                data: JSON.stringify(newService),
+                success: function (result) {
+                    alert('Service created successfully!');
+                    window.location.href = '/Service/Index'
+                },
+                error: function (xhr, error) {
+                    alert('Error creating service: ' + xhr.statusText);
+                }
+            });
+        }
+</script>
+}

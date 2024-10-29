@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = null;
+    ViewData["Title"] = "Payment Success";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-lg">
+                        <div class="card-body">
+                            <h1 style="color:red;" class="card-title text-center mb-4">KoiVetenary</h1>
+                            <h3 class="card-text text-center text-danger">@TempData["Message"]</h3>
+                            <div class="text-center mt-4">
+                                <a class="btn btn-primary" asp-controller="Home" asp-action="Index" style="width: 60%;">Return to home page</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-pzjw8f+6qzkoK5I3a3/HsKV3vX4f4v3uGk5Bv7ZBwS+LBf6IqBae9uytTq4+XbK" crossorigin="anonymous"></script>
+</body>
+</html>

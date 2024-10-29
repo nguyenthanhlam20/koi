@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KoiVetenary.Common\KoiVetenary.Common.csproj" />
+    <ProjectReference Include="..\KoiVetenary.Data\KoiVetenary.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTO\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LinqKit" Version="1.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
+  </ItemGroup>
+
+</Project>

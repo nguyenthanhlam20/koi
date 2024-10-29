@@ -1,0 +1,250 @@
+﻿@* @model KoiVetenary.Data.Models.MedicalRecord
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>MedicalRecord</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RecordId" />
+            <div class="form-group">
+                <label asp-for="AnimalId" class="control-label"></label>
+                <select asp-for="AnimalId" class="form-control" asp-items="ViewBag.AnimalId"></select>
+                <span asp-validation-for="AnimalId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RecordDate" class="control-label"></label>
+                <input asp-for="RecordDate" class="form-control" />
+                <span asp-validation-for="RecordDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Symptoms" class="control-label"></label>
+                <input asp-for="Symptoms" class="form-control" />
+                <span asp-validation-for="Symptoms" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Diagnosis" class="control-label"></label>
+                <input asp-for="Diagnosis" class="form-control" />
+                <span asp-validation-for="Diagnosis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Treatment" class="control-label"></label>
+                <input asp-for="Treatment" class="form-control" />
+                <span asp-validation-for="Treatment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Medications" class="control-label"></label>
+                <input asp-for="Medications" class="form-control" />
+                <span asp-validation-for="Medications" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LabResults" class="control-label"></label>
+                <input asp-for="LabResults" class="form-control" />
+                <span asp-validation-for="LabResults" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VetNotes" class="control-label"></label>
+                <input asp-for="VetNotes" class="form-control" />
+                <span asp-validation-for="VetNotes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FollowUpRequired" class="control-label"></label>
+                <input asp-for="FollowUpRequired" class="form-control" />
+                <span asp-validation-for="FollowUpRequired" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FollowUpDate" class="control-label"></label>
+                <input asp-for="FollowUpDate" class="form-control" />
+                <span asp-validation-for="FollowUpDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} *@
+
+
+@{
+    ViewData["Title"] = "Edit Medical Record";
+}
+
+<h1>Edit Medical Record</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="medicalRecordForm">
+            <input type="hidden" id="RecordId" name="RecordId" />
+
+            <div class="form-group">
+                <label for="AnimalId">Animal</label>
+                <select id="AnimalId" name="AnimalId" class="form-control">
+                    <!-- Options will be loaded via AJAX -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="RecordDate">Record Date</label>
+                <input type="date" id="RecordDate" name="RecordDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Symptoms">Symptoms</label>
+                <input type="text" id="Symptoms" name="Symptoms" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Diagnosis">Diagnosis</label>
+                <input type="text" id="Diagnosis" name="Diagnosis" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Treatment">Treatment</label>
+                <input type="text" id="Treatment" name="Treatment" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="Medications">Medications</label>
+                <input type="text" id="Medications" name="Medications" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="LabResults">Lab Results</label>
+                <input type="text" id="LabResults" name="LabResults" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="VetNotes">Vet Notes</label>
+                <input type="text" id="VetNotes" name="VetNotes" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="FollowUpRequired">Follow Up Required</label>
+                <input type="checkbox" id="FollowUpRequired" name="FollowUpRequired" />
+            </div>
+            <div class="form-group">
+                <label for="FollowUpDate">Follow Up Date</label>
+                <input type="date" id="FollowUpDate" name="FollowUpDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="submitForm()" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="/MedicalRecords">Back to List</a>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            loadAnimals();
+            loadMedicalRecord();
+        });
+
+        function loadAnimals() {
+            $.ajax({
+                url: 'https://localhost:7238/api/Animals',
+                type: 'GET',
+                dataType: 'json',
+                success: function (result) {
+                    var animalSelect = $('#AnimalId');
+                    $.each(result.data, function (index, animal) {
+                        animalSelect.append('<option value="' + animal.animalId + '">' + animal.name + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Error loading animals: ' + xhr.statusText);
+                }
+            });
+        }
+
+        function loadMedicalRecord() {
+            var recordId = getRecordIdFromUrl();
+            $('#RecordId').val(recordId);
+
+            $.ajax({
+                url: 'https://localhost:7238/api/MedicalRecord/' + recordId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (result) {
+                    if (result.data) {
+                        var record = result.data;
+                        $('#AnimalId').val(record.animalId);
+                        $('#RecordDate').val(formatDateForInput(record.recordDate));
+                        $('#Symptoms').val(record.symptoms);
+                        $('#Diagnosis').val(record.diagnosis);
+                        $('#Treatment').val(record.treatment);
+                        $('#Medications').val(record.medications);
+                        $('#LabResults').val(record.labResults);
+                        $('#VetNotes').val(record.vetNotes);
+                        $('#FollowUpRequired').prop('checked', record.followUpRequired);
+                        $('#FollowUpDate').val(formatDateForInput(record.followUpDate));
+                    } else {
+                        alert('Medical record not found.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Error loading medical record: ' + xhr.statusText);
+                }
+            });
+        }
+
+        function submitForm() {
+            var recordId = $('#RecordId').val();
+            var medicalRecord = {
+                RecordId: recordId,
+                AnimalId: $('#AnimalId').val(),
+                RecordDate: $('#RecordDate').val(),
+                Symptoms: $('#Symptoms').val(),
+                Diagnosis: $('#Diagnosis').val(),
+                Treatment: $('#Treatment').val(),
+                Medications: $('#Medications').val(),
+                LabResults: $('#LabResults').val(),
+                VetNotes: $('#VetNotes').val(),
+                FollowUpRequired: $('#FollowUpRequired').is(':checked'),
+                FollowUpDate: $('#FollowUpDate').val()
+            };
+
+            $.ajax({
+                url: 'https://localhost:7238/api/MedicalRecord/',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(medicalRecord),
+                success: function (result) {
+                    alert('Medical Record updated successfully');
+                    window.location.href = '/MedicalRecords';
+                },
+                error: function (xhr, status, error) {
+                    alert('Error updating medical record: ' + xhr.statusText);
+                }
+            });
+        }
+
+        function getRecordIdFromUrl() {
+            var url = window.location.href;
+            var parts = url.split('/');
+            return parts[parts.length - 1];
+        }
+
+        function formatDateForInput(dateString) {
+            if (dateString) {
+                var date = new Date(dateString);
+                var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                var day = ('0' + date.getDate()).slice(-2);
+                return date.getFullYear() + '-' + month + '-' + day;
+            } else {
+                return '';
+            }
+        }
+    </script>
+}

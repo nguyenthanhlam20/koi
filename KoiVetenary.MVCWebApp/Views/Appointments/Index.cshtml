@@ -1,0 +1,252 @@
+﻿@using KoiVetenary.Common
+@model IEnumerable<KoiVetenary.Data.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div class="mb-3">
+    <input type="text" id="searchTerm" class="form-control" placeholder="Search Appointments...">
+    <button onclick="searchData()" class="btn btn-primary mt-2">Search</button>
+</div>
+@* <div class="container mt-4">
+    <form method="get" asp-action="Index" class="w-100">
+        <!-- Contact Email -->
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="ContactEmail">Contact Email:</label>
+                <input type="email" name="ContactEmail" class="form-control" placeholder="Enter contact email" />
+            </div>
+        </div>
+
+        <!-- Contact Phone -->
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="ContactPhone">Contact Phone:</label>
+                <input type="text" name="ContactPhone" class="form-control" placeholder="Enter contact phone number" />
+            </div>
+        </div>
+
+        <!-- Appointment Status -->
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="Status">Status:</label>
+                <input type="text" name="Status" class="form-control" placeholder="Enter status (e.g., Confirmed, Pending)" />
+            </div>
+        </div>
+
+        <!-- Total Cost From and To -->
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="TotalCostFrom">Total Cost From:</label>
+                <input type="number" name="TotalCostFrom" class="form-control" step="0.01" placeholder="Min cost" />
+            </div>
+            <div class="col-md-4">
+                <label for="TotalCostTo">Total Cost To:</label>
+                <input type="number" name="TotalCostTo" class="form-control" step="0.01" placeholder="Max cost" />
+            </div>
+        </div>
+
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+</div> *@
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialRequests)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPaid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalEstimatedDuration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalCost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Owner)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+               @Html.DisplayFor(modelItem => item.AppointmentId)
+            </td>
+            <td>
+                @item.AppointmentDate?.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                @item.AppointmentTime?.ToString(@"hh\:mm\:ss")                   
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialRequests)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPaid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalEstimatedDuration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedDate)
+            </td>
+            <td>
+                    @item.Owner.FirstName @item.Owner.LastName
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AppointmentId">Delete</a>
+                    @if (!item.IsPaid.Value && item.Status.Trim().Equals(AppointmentStatus.Completed))
+                    {
+                        <span> | </span>
+                        <a asp-action="Create" asp-controller="Payment" asp-route-id="@item.AppointmentId">Checkout</a>
+                    }
+                </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        function searchData() {
+            var searchTerm = $('#searchTerm').val().trim(); // Get the value of the search term and trim any spaces
+            var url = 'https://localhost:7238/api/Appointments';
+
+            // If search term is not empty, append it to the search API call
+            if (searchTerm !== '') {
+                url = url + '/search?searchTerm=' + encodeURIComponent(searchTerm);
+            }
+
+            // Make AJAX call to fetch records based on search term or all records if searchTerm is empty
+            $.ajax({
+                url: url,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    renderTable(result.data); // Render the search results or all records
+                },
+                error: function (xhr, error) {
+                    alert('Error: ' + xhr.statusText);
+                }
+            });
+        }
+        function renderTable(data) {
+            var tableBody = $('table tbody'); // Select the table body
+            tableBody.empty(); // Clear existing rows in the table
+
+            // Iterate over each item in the result and append rows dynamically
+            $.each(data, function (index, item) {
+                var row = '<tr>' +
+                    '<td>' + formatDate(item.appointmentDate) + '</td>' +
+                    '<td>' + item.appointmentTime + '</td>' +
+                    '<td>' + item.contactEmail + '</td>' +
+                    '<td>' + item.contactPhone + '</td>' +
+                    '<td>' + item.status + '</td>' +
+                    '<td>' + item.specialRequests + '</td>' +
+                    '<td>' + item.notes + '</td>' +
+                    '<td>' + item.totalEstimatedDuration + '</td>' +
+                    '<td>' + item.totalCost + '</td>' +
+                    '<td>' + item.createdBy + '</td>' +
+                    '<td>' + item.modifiedBy + '</td>' +
+                    '<td>' + item.createdDate + '</td>' +
+                    '<td>' + item.updatedDate + '</td>' +
+                    '<td>' + item.owner.firstName + ' ' item.owner.LastName + '</td>' +
+                    '<td>' +
+                    '<a href="/Appointments/Edit/' + item.appointmentId + '">Edit</a> | ' +
+                    '<a href="/Appointments/Details/' + item.appointmentId + '">Details</a> | ' +
+                    '<a href="/Appointments/Delete/' + item.appointmentId + '">Delete</a> | ' +
+                    '<a href="/Payment/Create/' + item.appointmentId + '">Checkout</a>' +
+                    '</td>' +
+                    '</tr>';
+                tableBody.append(row); // Append the row to the table body
+            });
+        }
+
+        // Optional function to format date in 'yyyy-MM-dd' format
+        function formatDate(dateString) {
+            if (!dateString) return ''; // Return empty if date is not provided
+            var date = new Date(dateString);
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2); // Add leading zero if needed
+            var day = ('0' + date.getDate()).slice(-2); // Add leading zero if needed
+            return year + '-' + month + '-' + day;
+        }
+     </script>
+}

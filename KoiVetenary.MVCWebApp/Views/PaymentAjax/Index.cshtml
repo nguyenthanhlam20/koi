@@ -1,0 +1,113 @@
+﻿@using KoiVetenary.Common
+@model IEnumerable<KoiVetenary.Data.Models.Payment>
+
+<div class="container">
+    <div class="mb-3">
+        <div >
+            <label class="control-label">Owner ID</label>
+            <select id="ownerId" name="ownerId" class="form-control" asp-items="ViewBag.OwnerId"></select>
+        </div>
+        <input type="text" id="searchTerm" name="searchTerm" class="form-control mt-2" placeholder="Search payment by date, total amount, appointment ID...">
+        <button onclick="searchPayments()" class="btn btn-primary mt-2">Search</button>
+    </div>
+
+    <div id="noDataMessage" style="display: none;" class="alert alert-info text-center">No payments found.</div>
+
+    <table class="table table-hover table-bordered mt-3" id="paymentTable" style="display: none;">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.PaymentId)</th>
+                <th>@Html.DisplayNameFor(model => model.AppointmentId)</th>
+                <th>@Html.DisplayNameFor(model => model.PaymentDate)</th>
+                <th>@Html.DisplayNameFor(model => model.TotalAmount)</th>
+                <th>@Html.DisplayNameFor(model => model.TransactionNo)</th>
+                <th>@Html.DisplayNameFor(model => model.BankTranNo)</th>
+                <th>@Html.DisplayNameFor(model => model.TransactionStatus)</th>
+                <th>@Html.DisplayNameFor(model => model.OrderInfo)</th>
+                <th>@Html.DisplayNameFor(model => model.BankCode)</th>
+                <th>@Html.DisplayNameFor(model => model.TransactionType)</th>
+                <th>@Html.DisplayNameFor(model => model.PayDate)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically loaded here -->
+        </tbody>
+    </table>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Automatically load payments when the page loads
+            searchPayments();
+        });
+
+        function searchPayments() {
+            var searchTerm = $('#searchTerm').val().trim();
+            var ownerId = $('#ownerId').val().trim();
+            var url = 'https://localhost:7238/api/Payment/search?ownerId=' + ownerId;
+
+            if (searchTerm !== '') {
+                url += '&searchTerm=' + encodeURIComponent(searchTerm);
+            }
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    renderPaymentTable(result.data);
+                },
+                error: function (xhr, error) {
+                    alert('Error: ' + xhr.statusText);
+                }
+            });
+        }
+
+        function renderPaymentTable(data) {
+            var tableBody = $('#paymentTable tbody');
+            var table = $('#paymentTable');
+            var noDataMessage = $('#noDataMessage');
+
+            tableBody.empty();
+
+            if (data.length === 0) {
+                table.hide();
+                noDataMessage.show();
+            } else {
+                table.show();
+                noDataMessage.hide();
+
+                $.each(data, function (index, item) {
+                    var row = '<tr>' +
+                        '<td>' + item.paymentId + '</td>' +
+                        '<td>' + item.appointmentId + '</td>' +
+                        '<td>' + formatDate(item.paymentDate) + '</td>' +
+                        '<td>$' + (item.totalAmount ? item.totalAmount.toFixed(2) : "N/A") + '</td>' +
+                        '<td>' + item.transactionNo + '</td>' +
+                        '<td>' + item.bankTranNo + '</td>' +
+                        '<td>' + item.transactionStatus + '</td>' +
+                        '<td>' + item.orderInfo + '</td>' +
+                        '<td>' + item.bankCode + '</td>' +
+                        '<td>' + item.transactionType + '</td>' +
+                        '<td>' + formatDate(item.payDate) + '</td>' +
+                        '<td><a href="/PaymentAjax/Details?id=' + item.paymentId + '" class="btn btn-sm btn-info text-white">Details</a></td>' +
+                        '</tr>';
+                    tableBody.append(row);
+                });
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            var date = new Date(dateString);
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            var day = ('0' + date.getDate()).slice(-2);
+            return year + '-' + month + '-' + day;
+        }
+    </script>
+}

@@ -1,0 +1,99 @@
+﻿@model IEnumerable<KoiVetenary.Data.Models.Veterinarian>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Time</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .time-container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .time-btn {
+            width: 200px;
+            height: 90px;
+            font-weight: bold;
+            border-radius: 70px;
+        }
+        .next-btn {
+            display: block;
+            width: 100px;
+            margin: 20px auto 0;
+        }
+        </style>
+
+    </head>
+<body>
+    <h1 class="text-center mt-5">Select a Veterinarian</h1>
+    <div class="container text-center mt-5">
+        <div class="time-container">
+            @foreach (var item in Model)
+            {
+                <button type="button" class="btn btn-outline-primary time-btn" onclick="selectTime(this, @item.VeterinarianId)">
+                    @item.FirstName @item.LastName -
+                    <strong>@item.Specialization</strong>
+                </button>
+            }
+        </div>
+        <button type="button" class="btn btn-secondary next-btn" id="nextBtn" onclick="submitVeterinarian()" disabled>Next</button>
+    </div>
+
+    <script>
+        let selectedVeterinarianId = null;
+        var appointmentDetailId = localStorage.getItem('appointmentDetailId');
+        function selectTime(button, veterinarianId) {
+            // Reset all buttons to unselected state
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline-primary');
+            });
+
+            // Mark the selected button
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-primary');
+
+            // Enable the Next button
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.classList.remove('btn-secondary');
+            nextBtn.classList.add('btn-success');
+            nextBtn.disabled = false;
+
+            // Update the selectedVeterinarianId
+            selectedVeterinarianId = veterinarianId; // Lưu lại VeterinarianId được chọn
+        }
+
+        function submitVeterinarian() {
+            if (selectedVeterinarianId) {
+                // Gửi yêu cầu AJAX với selectedVeterinarianId
+                $.ajax({
+                    url: 'https://localhost:7238/api/AppointmentDetail/update-vete/' + appointmentDetailId + '/' + selectedVeterinarianId,
+                    type: 'PUT',
+                    success: function () {
+                        alert('Service added successfully!');
+                        window.location.href = '/AppointmentDetail/Index';
+                    },
+                    error: function () {
+                        alert('Error updating appointment');
+                    }
+                });
+            } else {
+                alert('Please select a veterinarian first.');
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
